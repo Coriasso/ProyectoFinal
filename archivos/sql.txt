@@ -1,0 +1,1 @@
+CREATE TABLE `libreria`. ( `dni` INT NOT NULL , `nombre` VARCHAR(20) NOT NULL , `apellido` VARCHAR(30) NOT NULL , `email` VARCHAR(25) NULL , `genero` VARCHAR(10) NULL , `fechaNacimiento` VARCHAR(20) NULL , PRIMARY KEY (`dni`)) ENGINE = InnoDB;
