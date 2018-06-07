@@ -29,7 +29,14 @@ public class ControladorPanelDerecho implements ActionListener{
 		ControladorPanelDerecho.dao = dao;
 
 		registrarComponentes();
-		//Si existen registros en la base de datos se ejecutará este if
+		
+		if(!dao.comprobarNumenoRegistros()) {
+			
+			System.out.println("AquÃ­ no hay registros aun");
+		}
+		
+		
+		//Si existen registros en la base de datos se ejecutar este if
 		if(dao.comprobarNumenoRegistros()) {
 			personas = dao.listarDatos();
 			cargarRegistro(contador,personas);
@@ -90,7 +97,7 @@ public class ControladorPanelDerecho implements ActionListener{
 		if (creacion) {
 			switch (jbutton.getText()) {
 			case "+":
-				System.out.println("Añadir registro");
+				System.out.println("Aï¿½adir registro");
 				break;
 			case "-":
 				System.out.println("Quitar registro");
@@ -116,11 +123,11 @@ public class ControladorPanelDerecho implements ActionListener{
 	}
 
 
-	//método estático que permite mostrar los datos obtenidos en el controlador izquierdo
+	//mï¿½todo estï¿½tico que permite mostrar los datos obtenidos en el controlador izquierdo
 	
 	
 	protected static void cargarRegistro(int contador, List<PersonaDTO> personas) {
-		//Colocar la información de cada persona en los campos de texto
+		//Colocar la informaciï¿½n de cada persona en los campos de texto
 
 		//Seteamos la lista que se usa como argumento con la lista del controlador, para evitar que
 		//si viene de otro sitio al avanzar de registro salte a la otra lista
@@ -138,10 +145,10 @@ public class ControladorPanelDerecho implements ActionListener{
 
 
 
-		//Núnero de registro actual y total
+		//Nï¿½nero de registro actual y total
 		vista.getRegistroActual().setText((contador + 1) + "/" + (personas.size()));
-		//Sacamos el número de dígitos que hay, para asignarle un tamaño dinámico al cuadro de texto.
-		//Se convierte en string y se saca el lenght para el número de digitos en cada número
+		//Sacamos el nï¿½mero de dï¿½gitos que hay, para asignarle un tamaï¿½o dinï¿½mico al cuadro de texto.
+		//Se convierte en string y se saca el lenght para el nï¿½mero de digitos en cada nï¿½mero
 		int anchuraContador = (personas.size()+"").length()+((contador+1)+"").length() +1;
 		vista.getRegistroActual().setSize((anchuraContador*8), 23);
 

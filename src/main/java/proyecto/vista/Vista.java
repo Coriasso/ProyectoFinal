@@ -319,6 +319,8 @@ public class Vista extends JFrame {
 		panel_1.setLayout(groupPanel);
 		
 		panel_2 = new JPanel();
+		
+		panel_2.setEnabled(false);;
 		tabbedPane.addTab("Tabla", null, panel_2, null);
 		panel_2.setLayout(new BorderLayout(0, 0));
 		
@@ -507,7 +509,9 @@ public class Vista extends JFrame {
 	public JButton getBotonBorrarTabla() {
 		return botonBorrarTabla;
 	}
-	
+	public JPanel getPanel_2() {
+		return panel_2;
+	}
 	
 	
 }

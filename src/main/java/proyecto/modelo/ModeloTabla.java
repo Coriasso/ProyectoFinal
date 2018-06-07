@@ -1,6 +1,5 @@
 package proyecto.modelo;
 
-import java.util.Arrays;
 
 import javax.swing.table.AbstractTableModel;
 

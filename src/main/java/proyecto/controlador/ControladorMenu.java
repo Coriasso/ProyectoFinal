@@ -58,6 +58,7 @@ public class ControladorMenu implements ActionListener {
 			vista.getBotonMenos10().setEnabled(true);
 			vista.getBotonMas10().setEnabled(true);
 		}
+		ControladorTabla.mostrarTabla();
 	}
 
 

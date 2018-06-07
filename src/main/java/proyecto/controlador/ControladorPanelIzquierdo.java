@@ -24,6 +24,12 @@ public class ControladorPanelIzquierdo implements ActionListener {
 		ControladorPanelIzquierdo.vista = vista;
 		this.dao = dao;
 		registrarComponentes();	
+		
+		if(dao.comprobarNumenoRegistros()) {
+			System.out.println("No hay registros");
+		}
+		
+		//true si tiene registros
 		if(dao.comprobarNumenoRegistros()) {
 		dominiosEmail();
 		vista.getComboBox().setModel(new DefaultComboBoxModel(vista.getExtensionesEmail().toArray()));

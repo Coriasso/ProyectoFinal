@@ -83,7 +83,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 			}
 			if (contadorLineas>0) confirmacion = true;
-			System.out.printf("Se añadieron %d líneas%n", contadorLineas);
+			System.out.printf("Se aï¿½adieron %d lï¿½neas%n", contadorLineas);
 			pst.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -184,7 +184,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 			}
 			if (contadorLineas>0) confirmacion = true;
-			System.out.printf("Se modificaron %d líneas%n", contadorLineas);
+			System.out.printf("Se modificaron %d lï¿½neas%n", contadorLineas);
 			pst.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -241,7 +241,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 				+ " `apellido` VARCHAR(30) NOT NULL"
 				+ " , `email` VARCHAR(25) NULL"
 				+ " , `genero` VARCHAR(10) NULL"
-				+ " , `ciudad` VARCHAR(15) NULL"
+				+ " , `pais` VARCHAR(15) NULL"
 				+ " , PRIMARY KEY (`dni`));");
 		try {
 			Statement st = c.createStatement();
@@ -255,7 +255,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 		return confirmacion;
 	}
 
-	//Devolverá true si hay al menos un registro en la base de datos
+	//Devolverï¿½ true si hay al menos un registro en la base de datos
 	@Override
 	public boolean comprobarNumenoRegistros() {
 		boolean comprobacion = false;
@@ -279,7 +279,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 	public List<PersonaDTO> listarRegistroConFiltro(List<String[]> filtro) {
 		List <PersonaDTO> personas = new ArrayList<>();
 		String sql = "Select * from personas where " + filtro.get(0)[0] +" = '" + filtro.get(0)[1] + "' ";	
-		//En caso de que el email es el único filtro
+		//En caso de que el email es el ï¿½nico filtro
 		if(filtro.get(0)[0].matches("email"))
 			sql = "Select * from personas where " + filtro.get(0)[0] +" like '%" + filtro.get(0)[1] + "' ";
 

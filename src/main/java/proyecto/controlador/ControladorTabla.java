@@ -20,24 +20,27 @@ public class ControladorTabla implements ActionListener{
 	private static final int NUMERO_REGISTROS = 23;
 	private static Vista vista;
 	private static ImplementacionDAO dao;
-	private JTable tabla;
+	private static JTable tabla;
 	private static Object[][] datos = new Object[NUMERO_REGISTROS][6];
 	private static int paginaActual = 0;
-	private ModeloTabla modelo;
+	private static ModeloTabla modelo;
 
 
 	public ControladorTabla (Vista vista, ImplementacionDAO dao) {
 		ControladorTabla.vista = vista;
 		ControladorTabla.dao = dao;
-		this.tabla = vista.getTablaCompleta();
+		ControladorTabla.tabla = vista.getTablaCompleta();
 		registrarComponentes();
-		mostrarTabla();
+		if(ControladorTabla.dao.comprobarNumenoRegistros())
+			System.out.println("hola");
+			mostrarTabla();
+			
 
 
 	}
 
 
-	private void mostrarTabla() {
+	public static void mostrarTabla() {
 		actualizarDatos();
 		modelo = new ModeloTabla(datos, dao, vista);
 		tabla.setModel(modelo);
@@ -85,10 +88,10 @@ public class ControladorTabla implements ActionListener{
 		
 		List<PersonaDTO> personas = dao.listarDatos();
 				
-		//Determinamos el número de páginas completas que podemos crear
+		//Determinamos el nï¿½mero de pï¿½ginas completas que podemos crear
 		int paginasTotales = (int) Math.ceil(personas.size() / NUMERO_REGISTROS); 
 		if(paginaActual == paginasTotales + 2) paginaActual = 0;
-		//Si no es exacto aquí se guarda el numero de registro restante
+		//Si no es exacto aquï¿½ se guarda el numero de registro restante
 		int registrosPaginaFinal = personas.size() % NUMERO_REGISTROS;
 		
 		int contador = 0;
@@ -96,7 +99,7 @@ public class ControladorTabla implements ActionListener{
 		
 		for (int i = 0; i <  NUMERO_REGISTROS - 1; i++) {
 			// Los datos a los que se acceden en la lista vienen determinados
-			// por la página que se muestre y el número de registros de esta
+			// por la pï¿½gina que se muestre y el nï¿½mero de registros de esta
 			int registroSiguiente = i + (paginaActual * NUMERO_REGISTROS);
 			for (int j = 0; j < 6; j++) {
 				datos[contador][0] = personas.get(registroSiguiente).getDni();
@@ -108,11 +111,11 @@ public class ControladorTabla implements ActionListener{
 			}
 			contador ++;
 		}
-		//Contador de páginas, dependiendo si hay una página final incompleta
+		//Contador de pï¿½ginas, dependiendo si hay una pï¿½gina final incompleta
 		if (registrosPaginaFinal == 0)
-			vista.getTextoRegistroTabla().setText(paginaActual + "/" + paginasTotales);
+			vista.getTextoRegistroTabla().setText((paginaActual + 1) + "/" + paginasTotales);
 		else
-			vista.getTextoRegistroTabla().setText(paginaActual + "/" + (paginasTotales + 1));
+			vista.getTextoRegistroTabla().setText((paginaActual + 1 )+ "/" + (paginasTotales + 1));
 
 	}
 	
@@ -123,11 +126,6 @@ public class ControladorTabla implements ActionListener{
 		
 		dao.borrarCampo(dni);		
 	}
-
 	
-
-
-
-
 
 }

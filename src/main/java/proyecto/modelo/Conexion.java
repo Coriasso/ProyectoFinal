@@ -14,6 +14,8 @@ public class Conexion {
 
 
 		try {
+			
+			
 			//conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/registro","root","");
 			conexion = DriverManager.getConnection("jdbc:sqlite:BBDD/personas.db");
 		} catch (SQLException e) {e.printStackTrace();}
