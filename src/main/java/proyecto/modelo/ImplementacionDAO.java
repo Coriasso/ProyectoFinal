@@ -11,22 +11,22 @@ import java.sql.Statement;
 
 public class ImplementacionDAO implements OperacionesDAO {
 
+	private   Connection c = Conexion.abrirConexion();
 	@Override
 	public List<PersonaDTO> listarDatos() {
-		Connection c = Conexion.abrirConexion();
+
 		List<PersonaDTO> personas = new ArrayList<PersonaDTO>();
 		try {
 			PreparedStatement pst = c.prepareStatement("Select *  from personas");
 			ResultSet r = pst.executeQuery();
 
-
+			//TODO normalizar las bases de datos
 			while (r.next()) {
 
-				if( r.getString(4).equals("Masculino"))
-					personas.add(new PersonaDTO(r.getString(1), r.getString(2), r.getString(3), Genero.Masculino,r.getString(5),r.getInt(6)));
+				if( r.getString(5).equals("Masculino"))
+					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Masculino,r.getString(6),r.getInt(1)));
 				else
-					personas.add(new PersonaDTO(r.getString(1), r.getString(2), r.getString(3), Genero.Femenino,r.getString(5),r.getInt(6)));
-
+					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Femenino,r.getString(6),r.getInt(1)));
 			}
 
 		} catch (SQLException | PersonasExcepcion e) {
@@ -37,21 +37,47 @@ public class ImplementacionDAO implements OperacionesDAO {
 		return personas;
 	}
 
+	public List<PersonaDTO> listarDatos(String sql) {
+
+		List<PersonaDTO> personas = new ArrayList<PersonaDTO>();
+		try {
+			PreparedStatement pst = c.prepareStatement(sql);
+			ResultSet r = pst.executeQuery();
+
+
+			while (r.next()) {
+
+				if( r.getString(5).equals("Masculino"))
+					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Masculino,r.getString(6),r.getInt(1)));
+				else
+					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Femenino,r.getString(6),r.getInt(1)));
+
+			}
+
+		} catch (SQLException | PersonasExcepcion e) {
+			// TODO Auto-generated catch block
+			System.out.println("Esta consulta no obtuvo resultados");
+		}
+
+		return personas;
+	}
+
+
 	@Override
 	public boolean introducirDatos(List<PersonaDTO> personas) {
-		//insert into personas values ("Jorge", "Sanchez", "coriasso@outlook.es", "masculino", "11/07/1994", 77340070);
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
 		int contadorLineas = 0; 
 		try {
 			PreparedStatement pst = c.prepareStatement("INSERT INTO personas VALUES (?,?,?,?,?,?);");
 			for (int i = 0; i < personas.size(); i++) {
-				pst.setString(1, personas.get(i).getNombre());
-				pst.setString(2, personas.get(i).getApellido());
-				pst.setString(3, personas.get(i).getEmail());
-				pst.setObject(4, personas.get(i).getGenero());
-				pst.setObject(5, personas.get(i).getFechaNacimiento());
-				pst.setInt(6, personas.get(i).getDni());
+				pst.setInt(1, personas.get(i).getDni());
+				pst.setString(2, personas.get(i).getNombre());
+				pst.setString(3, personas.get(i).getApellido());
+				pst.setString(4, personas.get(i).getEmail());
+				pst.setObject(5, personas.get(i).getGenero());
+				pst.setString(6, personas.get(i).getPais());
+
 
 				contadorLineas += pst.executeUpdate();
 
@@ -70,16 +96,16 @@ public class ImplementacionDAO implements OperacionesDAO {
 	@Override
 	public boolean introducirDatos(PersonaDTO persona) {
 
-		Connection c = Conexion.abrirConexion();
-		boolean confirmacion = false; 
+		//Connection c = Conexion.abrirConexion();
+		boolean confirmacion = false;
 		try {
 			PreparedStatement pst = c.prepareStatement("INSERT INTO personas VALUES (?,?,?,?,?,?);");
-			pst.setString(1, persona.getNombre());
-			pst.setString(2, persona.getApellido());
-			pst.setString(3, persona.getEmail());
-			pst.setObject(4, persona.getGenero());
-			pst.setObject(5, persona.getFechaNacimiento());
-			pst.setInt(6, persona.getDni());
+			pst.setInt(1, persona.getDni());
+			pst.setString(2, persona.getNombre());
+			pst.setString(3, persona.getApellido());
+			pst.setString(4, persona.getEmail());
+			pst.setObject(5, persona.getGenero());
+			pst.setString(6, persona.getPais());
 			if(pst.executeUpdate() < 0) confirmacion = true;
 
 		} catch (SQLException e) {
@@ -93,15 +119,15 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 	@Override
 	public boolean actualizarCampo(PersonaDTO persona) {
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false; 
 		try {
-			PreparedStatement pst = c.prepareStatement("UPDATE personas SET nombre=?, apellido=?, email=?,genero=?,fechaNacimiento=? WHERE dni=?;");
+			PreparedStatement pst = c.prepareStatement("UPDATE personas SET nombre=?, apellido=?, email=?,genero=?,pais=? WHERE dni=?;");
 			pst.setString(1, persona.getNombre());
 			pst.setString(2, persona.getApellido());
 			pst.setString(3, persona.getEmail());
 			pst.setObject(4, persona.getGenero());
-			pst.setObject(5, persona.getFechaNacimiento());
+			pst.setString(5, persona.getPais());
 			pst.setInt(6, persona.getDni());
 			if(pst.executeUpdate() < 0) confirmacion = true;
 
@@ -115,9 +141,33 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 	}
 
+	
+	@Override
+	public boolean actualizarCampo(String[] datos) {
+		//Los datos llegan en el orden : numero de dni, nombre del campo editado, y valor nuevo
+		
+		try {
+			
+			//String sql = "UPDATE personas set ? = ? where dni = ?";
+			String sql = "UPDATE personas set "+ datos[1] +"= '"+ datos[2] +"' where dni =" + datos[0];
+			System.out.println(sql);
+			PreparedStatement pst = c.prepareStatement(sql);
+		
+			/*pst.setString(1, datos[1]);
+			pst.setString(2, datos[2]);
+			pst.setString(3,datos[0]);*/
+			pst.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false; 
+	}
+	
 	@Override
 	public boolean actualizarCampo(List<PersonaDTO> personas) {
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
 		int contadorLineas = 0; 
 		try {
@@ -127,7 +177,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 				pst.setString(2, personas.get(i).getApellido());
 				pst.setString(3, personas.get(i).getEmail());
 				pst.setObject(4, personas.get(i).getGenero());
-				pst.setObject(5, personas.get(i).getFechaNacimiento());
+				pst.setString(5, personas.get(i).getPais());
 				pst.setInt(6, personas.get(i).getDni());
 
 				contadorLineas += pst.executeUpdate();
@@ -146,7 +196,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 	@Override
 	public boolean borrarCampo(int dni)  {
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
 		try {
 			PreparedStatement pst = c.prepareStatement("Delete from personas where dni=?");
@@ -162,7 +212,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 	@Override
 	public boolean borrarCampo(int[] dni) {
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
 		int contador = 0;
 		try {
@@ -184,14 +234,15 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 	@Override
 	public boolean crearTabla() {
-		Connection c = Conexion.abrirConexion();
+		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
-		String sql = ("CREATE TABLE `libreria`. ( `dni` INT NOT NULL , `nombre` VARCHAR(20) NOT NULL ,"
-				+ " `apellido` VARCHAR(30) NOT NULL ,"
-				+ " `email` VARCHAR(25) NULL ,"
-				+ " `genero` VARCHAR(10) NULL ,"
-				+ " `fechaNacimiento` VARCHAR(20) NULL ,"
-				+ " PRIMARY KEY (`dni`)) ");
+		String sql = ("CREATE TABLE personas ( `dni` INT(8) NOT NULL ,"
+				+ " `nombre` VARCHAR(20) NOT NULL ,"
+				+ " `apellido` VARCHAR(30) NOT NULL"
+				+ " , `email` VARCHAR(25) NULL"
+				+ " , `genero` VARCHAR(10) NULL"
+				+ " , `ciudad` VARCHAR(15) NULL"
+				+ " , PRIMARY KEY (`dni`));");
 		try {
 			Statement st = c.createStatement();
 			st.executeUpdate(sql);
@@ -200,8 +251,51 @@ public class ImplementacionDAO implements OperacionesDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return confirmacion;
+	}
+
+	//Devolverá true si hay al menos un registro en la base de datos
+	@Override
+	public boolean comprobarNumenoRegistros() {
+		boolean comprobacion = false;
+		try {
+			PreparedStatement spt = c.prepareStatement("SELECT count(*) FROM personas");
+			ResultSet r = spt. executeQuery();
+			//No me queda claro por que, pero hay que avanzar el resulset uno para que detecte la columna uno
+			//en sqlite esto no era necesari
+			r.next();
+			if (r.getInt(1) > 0) comprobacion = true;
+
+		} catch (SQLException e) {
+			System.out.println("Database empty");
+
+		}
+
+		return comprobacion;
+	}
+
+	@Override
+	public List<PersonaDTO> listarRegistroConFiltro(List<String[]> filtro) {
+		List <PersonaDTO> personas = new ArrayList<>();
+		String sql = "Select * from personas where " + filtro.get(0)[0] +" = '" + filtro.get(0)[1] + "' ";	
+		//En caso de que el email es el único filtro
+		if(filtro.get(0)[0].matches("email"))
+			sql = "Select * from personas where " + filtro.get(0)[0] +" like '%" + filtro.get(0)[1] + "' ";
+
+		if(filtro.size() == 1) 	
+			personas = listarDatos(sql);		
+		else {
+			for (int i = 1; i < filtro.size(); i ++ ) {
+				if(filtro.get(i)[0].matches("email"))
+					sql += "AND " + filtro.get(i)[0] + " like '%" + filtro.get(i)[1] + "'";
+				else
+					sql += "AND " + filtro.get(i)[0] + " = '" + filtro.get(i)[1] + "'";
+
+			}
+			personas = listarDatos(sql);
+		}
+		return personas;
 	}
 
 }

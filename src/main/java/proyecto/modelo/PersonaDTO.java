@@ -1,5 +1,6 @@
 package proyecto.modelo;
 
+
 public class PersonaDTO {
 
 
@@ -7,19 +8,19 @@ public class PersonaDTO {
 	private String apellido;
 	private String email;
 	private Genero genero;
-	private String fechaNacimiento;
+	private String pais;
 	private int dni;
 	
 	public PersonaDTO(String nombre, String apellido, String email, Genero genero,
-			String fechaNacimiento, int id) throws PersonasExcepcion {
+			String pais, int dni) throws PersonasExcepcion {
 		//TODO excepción
 		if (nombre != null) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.email = email;
 		this.genero = genero;
-		this.fechaNacimiento = fechaNacimiento;
-		this.dni= id;
+		this.pais = pais;
+		this.dni= dni;
 
 		}
 		else throw new PersonasExcepcion("Se debe suministrar el nombre siempre");
@@ -78,8 +79,9 @@ public class PersonaDTO {
 
 
 
-	public Genero getGenero() {
-		return genero;
+	public String getGenero() {
+		if (genero == Genero.Femenino) return "Femenino";
+		return "Masculino";
 	}
 
 
@@ -91,19 +93,16 @@ public class PersonaDTO {
 	}
 
 
-
-
-
-	public String getFechaNacimiento() {
-		return fechaNacimiento;
+	public String getPais() {
+		return pais;
 	}
 
 
 
 
 
-	public void setFechaNacimiento(String fechaNacimiento) {
-		this.fechaNacimiento = fechaNacimiento;
+	public void setPais(String ciudad) {
+		this.pais = ciudad;
 	}
 
 
@@ -129,7 +128,7 @@ public class PersonaDTO {
 	@Override
 	public String toString() {
 		return "Personas [nombre=" + nombre + ", apellido=" + apellido + ", email=" + email + ", genero="
-	+ genero + ", fechaNacimiento=" + fechaNacimiento + " , DNI=" + dni +"]";
+	+ genero + ", ciudad=" + pais + " , DNI=" + dni +"]";
 	}
 	
 	

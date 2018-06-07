@@ -1,18 +1,18 @@
 package proyecto.main;
 
 
-import proyecto.controlador.Controlador;
-import proyecto.modelo.APILectura;
-import proyecto.modelo.Conexion;
+import proyecto.controlador.ControladorPrincipal;
+import proyecto.modelo.ImplementacionDAO;
 import proyecto.vista.Vista;
 
 public class Main {
 
 	public static void main(String[] args) {
-
+		ImplementacionDAO dao = new ImplementacionDAO();
 		Vista vista = new Vista();
-		new Controlador(vista);
+		new ControladorPrincipal(vista, dao);
 
+		
 		
 		
 		

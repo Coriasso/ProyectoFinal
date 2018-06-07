@@ -14,6 +14,7 @@ public class Conexion {
 
 
 		try {
+			//conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/registro","root","");
 			conexion = DriverManager.getConnection("jdbc:sqlite:BBDD/personas.db");
 		} catch (SQLException e) {e.printStackTrace();}
 	}
@@ -33,5 +34,18 @@ public class Conexion {
 		return null;
 	}
 
+	static class ShutdownHook extends Thread{
+		@Override
+		public void run() {
+			if (conexion != null)
+				try {
+					System.out.println("Cerrando conexi�n");
+					conexion.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+	}
 	
 }
