@@ -97,7 +97,7 @@ public class ControladorPanelDerecho implements ActionListener{
 		if (creacion) {
 			switch (jbutton.getText()) {
 			case "+":
-				System.out.println("A�adir registro");
+				System.out.println("Nuevo Registro");
 				break;
 			case "-":
 				System.out.println("Quitar registro");

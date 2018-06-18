@@ -14,7 +14,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 	private   Connection c = Conexion.abrirConexion();
 	@Override
 	public List<PersonaDTO> listarDatos() {
-
+		boolean exito = false;
 		List<PersonaDTO> personas = new ArrayList<PersonaDTO>();
 		try {
 			PreparedStatement pst = c.prepareStatement("Select *  from personas");
@@ -28,17 +28,19 @@ public class ImplementacionDAO implements OperacionesDAO {
 				else
 					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Femenino,r.getString(6),r.getInt(1)));
 			}
+			exito = true;
 
 		} catch (SQLException | PersonasExcepcion e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Logs.escribirLog("Select *  from personas", exito);
 
 		return personas;
 	}
 
 	public List<PersonaDTO> listarDatos(String sql) {
-
+		boolean exito = false;
 		List<PersonaDTO> personas = new ArrayList<PersonaDTO>();
 		try {
 			PreparedStatement pst = c.prepareStatement(sql);
@@ -53,12 +55,13 @@ public class ImplementacionDAO implements OperacionesDAO {
 					personas.add(new PersonaDTO(r.getString(2), r.getString(3), r.getString(4), Genero.Femenino,r.getString(6),r.getInt(1)));
 
 			}
-
+			exito = true;
 		} catch (SQLException | PersonasExcepcion e) {
 			// TODO Auto-generated catch block
 			System.out.println("Esta consulta no obtuvo resultados");
+			
 		}
-
+		Logs.escribirLog("sql", exito);
 		return personas;
 	}
 
@@ -83,13 +86,14 @@ public class ImplementacionDAO implements OperacionesDAO {
 
 			}
 			if (contadorLineas>0) confirmacion = true;
-			System.out.printf("Se a�adieron %d l�neas%n", contadorLineas);
+			System.out.printf("%d nuevas lineas %n", contadorLineas);
+			Logs.escribirLog(pst.toString(), confirmacion);
 			pst.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return confirmacion;
 	}
 
@@ -107,13 +111,13 @@ public class ImplementacionDAO implements OperacionesDAO {
 			pst.setObject(5, persona.getGenero());
 			pst.setString(6, persona.getPais());
 			if(pst.executeUpdate() < 0) confirmacion = true;
-
+			Logs.escribirLog(pst.toString(), confirmacion);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Conexion.cerrarConexion();
+		
 		return confirmacion;
 	}
 
@@ -130,7 +134,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 			pst.setString(5, persona.getPais());
 			pst.setInt(6, persona.getDni());
 			if(pst.executeUpdate() < 0) confirmacion = true;
-
+			Logs.escribirLog(pst.toString(), confirmacion);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -150,14 +154,14 @@ public class ImplementacionDAO implements OperacionesDAO {
 			
 			//String sql = "UPDATE personas set ? = ? where dni = ?";
 			String sql = "UPDATE personas set "+ datos[1] +"= '"+ datos[2] +"' where dni =" + datos[0];
-			System.out.println(sql);
+			
 			PreparedStatement pst = c.prepareStatement(sql);
 		
 			/*pst.setString(1, datos[1]);
 			pst.setString(2, datos[2]);
 			pst.setString(3,datos[0]);*/
 			pst.executeUpdate();
-			
+			Logs.escribirLog(sql, true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -170,8 +174,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 		//Connection c = Conexion.abrirConexion();
 		boolean confirmacion = false;
 		int contadorLineas = 0; 
-		try {
-			PreparedStatement pst = c.prepareStatement("UPDATE personas SET nombre=?, apellido=?, email=?,genero=?,fechaNacimiento=? WHERE dni=?;");
+		try (PreparedStatement pst = c.prepareStatement("UPDATE personas SET nombre=?, apellido=?, email=?,genero=?,fechaNacimiento=? WHERE dni=?;");){
 			for (int i = 0; i < personas.size(); i++) {
 				pst.setString(1, personas.get(i).getNombre());
 				pst.setString(2, personas.get(i).getApellido());
@@ -181,11 +184,10 @@ public class ImplementacionDAO implements OperacionesDAO {
 				pst.setInt(6, personas.get(i).getDni());
 
 				contadorLineas += pst.executeUpdate();
-
+				Logs.escribirLog(pst.toString(), true);
 			}
 			if (contadorLineas>0) confirmacion = true;
-			System.out.printf("Se modificaron %d l�neas%n", contadorLineas);
-			pst.close();
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -222,7 +224,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 				contador += pst.executeUpdate();
 			}
 			if(contador>0)confirmacion = true;
-			System.out.printf("Se borraron %d registros %n", contador);
+			Logs.escribirLog(pst.toString(), confirmacion);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -247,6 +249,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 			Statement st = c.createStatement();
 			st.executeUpdate(sql);
 			confirmacion = true;
+			Logs.escribirLog(sql, confirmacion);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -271,7 +274,6 @@ public class ImplementacionDAO implements OperacionesDAO {
 			System.out.println("Database empty");
 
 		}
-
 		return comprobacion;
 	}
 
@@ -292,6 +294,7 @@ public class ImplementacionDAO implements OperacionesDAO {
 				else
 					sql += "AND " + filtro.get(i)[0] + " = '" + filtro.get(i)[1] + "'";
 
+				Logs.escribirLog(sql, true);
 			}
 			personas = listarDatos(sql);
 		}

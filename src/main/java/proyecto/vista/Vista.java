@@ -79,6 +79,7 @@ public class Vista extends JFrame {
 	private JPanel panelBotones;
 	private JTextField textoRegistroTabla;
 	private JButton botonBorrarTabla;
+	private JButton botonTablaCrear;
 	
 	public Vista() {
 		
@@ -346,6 +347,9 @@ public class Vista extends JFrame {
 		botonBorrarTabla.setHorizontalAlignment(SwingConstants.LEADING);
 		panelBotonesTabla.add(botonBorrarTabla);
 		
+		botonTablaCrear = new JButton("Nuevos registros");
+		panelBotonesTabla.add(botonTablaCrear);
+		
 		
 	}
 
@@ -511,6 +515,9 @@ public class Vista extends JFrame {
 	}
 	public JPanel getPanel_2() {
 		return panel_2;
+	}
+	public JButton getBotonTablaCrear() {
+		return botonTablaCrear;
 	}
 	
 	

@@ -128,7 +128,7 @@ public class PersonaDTO {
 	@Override
 	public String toString() {
 		return "Personas [nombre=" + nombre + ", apellido=" + apellido + ", email=" + email + ", genero="
-	+ genero + ", ciudad=" + pais + " , DNI=" + dni +"]";
+	+ genero + ", pais=" + pais + " , DNI=" + dni +"]";
 	}
 	
 	
